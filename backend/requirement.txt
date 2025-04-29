@@ -1,0 +1,14 @@
+
+fastapi
+uvicorn
+pydantic
+google-generativeai
+sqlalchemy
+databases
+asyncpg
+psycopg2-binary
+python-dotenv
+redis
+pandas
+matplotlib
+seaborn
