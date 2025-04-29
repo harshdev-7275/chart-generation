@@ -4,7 +4,6 @@ import ChartDisplay from './components/ChartDisplay'
 import DataTable from './components/DataTable'
 import SQLDisplay from './components/SQLDisplay'
 import ResponseCard from './components/ResponseCard'
-import './App.css'
 
 interface QueryResponse {
   question: string;
@@ -52,54 +51,60 @@ function App() {
   }
 
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <h1>Dynamic Data Analysis</h1>
-        <p>Ask questions about your data in natural language</p>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white w-screen">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <header className="text-center mb-12">
+          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 mb-2">
+            Dynamic Data Analysis
+          </h1>
+          <p className="text-gray-300 text-lg">
+            Ask questions about your data in natural language
+          </p>
+        </header>
 
-      <main className="app-main">
-        <div className="query-section">
-          <QueryForm
-            query={query}
-            setQuery={setQuery}
-            chartType={chartType}
-            setChartType={setChartType}
-            loading={loading}
-            onSubmit={handleSubmit}
-          />
-        </div>
-
-        {error && (
-          <div className="error-card">
-            <p className="error-message">{error}</p>
+        <main className="space-y-8">
+          <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-700">
+            <QueryForm
+              query={query}
+              setQuery={setQuery}
+              chartType={chartType}
+              setChartType={setChartType}
+              loading={loading}
+              onSubmit={handleSubmit}
+            />
           </div>
-        )}
 
-        {response && (
-          <div className="results-container">
-            <div className="card response-section">
-              <ResponseCard llmResponse={response.llm_response} />
+          {error && (
+            <div className="bg-red-500/10 border border-red-500 rounded-xl p-4">
+              <p className="text-red-400">{error}</p>
             </div>
+          )}
 
-            {response.result.length > 0 && (
-              <div className="card chart-section">
-                <h3>Visualization</h3>
-                <ChartDisplay data={response.result} chartType={chartType} />
+          {response && (
+            <div className="space-y-6">
+              <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-700">
+                <ResponseCard llmResponse={response.llm_response} />
               </div>
-            )}
 
-            <div className="card data-section">
-              <h3>Data</h3>
-              <DataTable data={response.result} />
-            </div>
+              {response.result.length > 0 && (
+                <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-700">
+                  <h3 className="text-xl font-semibold text-blue-400 mb-4">Visualization</h3>
+                  <ChartDisplay data={response.result} chartType={chartType} />
+                </div>
+              )}
 
-            <div className="card sql-section">
-              <SQLDisplay sql={response.sql} />
+              <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-700">
+                <h3 className="text-xl font-semibold text-blue-400 mb-4">Data</h3>
+                <DataTable data={response.result} />
+              </div>
+
+              <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-700">
+                <SQLDisplay sql={response.sql} />
+              </div>
             </div>
-          </div>
-        )}
-      </main>
+          )}
+        </main>
+      </div>
     </div>
   )
 }
