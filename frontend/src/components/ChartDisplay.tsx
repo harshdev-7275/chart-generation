@@ -20,13 +20,18 @@ import {
 interface ChartDisplayProps {
   data: any[];
   chartType: string;
+  xAxisKey?: string;
+  yAxisKeys?: string[];
 }
 
-const ChartDisplay: React.FC<ChartDisplayProps> = ({ data, chartType }) => {
+const ChartDisplay: React.FC<ChartDisplayProps> = ({ data, chartType, xAxisKey, yAxisKeys }) => {
   if (!data.length) return null;
 
-  const xKey = Object.keys(data[0])[0];
-  const yKey = Object.keys(data[0])[1];
+  const defaultXKey = Object.keys(data[0])[0];
+  const defaultYKey = Object.keys(data[0])[1];
+  
+  const xKey = xAxisKey || defaultXKey;
+  const yKey = yAxisKeys?.[0] || defaultYKey;
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
   const renderChart = () => {

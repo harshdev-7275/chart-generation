@@ -1,6 +1,6 @@
 # Dynamic Data Analysis and Visualization
 
-A full-stack application that allows users to query data using natural language and visualize it through various chart types. The application uses FastAPI for the backend, React for the frontend, and PostgreSQL for the database.
+A full-stack application that allows users to query data using natural language and visualize it through various chart types. The application uses Node.js/TypeScript for the backend, React/TypeScript for the frontend, and Redis for caching.
 
 ## Features
 
@@ -9,13 +9,12 @@ A full-stack application that allows users to query data using natural language 
 - Multiple visualization types (Bar, Line, Pie, Scatter)
 - Real-time data analysis
 - Responsive and modern UI
-- PostgreSQL database integration
+- Redis caching for improved performance
 
 ## Prerequisites
 
-- Python 3.8+
 - Node.js 16+
-- PostgreSQL 17+
+- Redis
 - Docker (optional, for containerized setup)
 
 ## Environment Variables
@@ -23,8 +22,8 @@ A full-stack application that allows users to query data using natural language 
 Create a `.env` file in the root directory with the following variables:
 
 ```env
-# Database Configuration
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+# Redis Configuration
+REDIS_URL=redis://localhost:6379
 
 # Google Gemini API
 GEMINI_API_KEY=your_gemini_api_key
@@ -37,31 +36,19 @@ GEMINI_API_KEY=your_gemini_api_key
 cd backend
 ```
 
-2. Create a virtual environment:
+2. Install dependencies:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+npm install
 ```
 
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-4. Start the PostgreSQL database (using Docker):
+3. Start the Redis server (using Docker):
 ```bash
 docker-compose up -d
 ```
 
-5. Populate the database with sample data:
+4. Start the backend server:
 ```bash
-python populate_data.py
-python populate_sports_data.py
-```
-
-6. Start the backend server:
-```bash
-uvicorn main:app --reload --port 8001
+npm run dev
 ```
 
 The backend API will be available at `http://localhost:8001`
@@ -85,86 +72,50 @@ npm run dev
 
 The frontend will be available at `http://localhost:5173`
 
-## API Endpoints
-
-- `POST /api/query`: Process natural language queries
-- `GET /api/tables`: List all available tables
-- `GET /api/schema/{table_name}`: Get schema for a specific table
-- `POST /api/execute-sql`: Execute custom SQL queries
-- `GET /api/test`: Test API functionality
-
-## Database Schema
-
-### india_revenue Table
-- year (Integer, Primary Key)
-- revenue (BigInteger)
-
-### sports_data Table
-- id (Integer, Primary Key)
-- sport (String)
-- year (Integer)
-- medals (Integer)
-- participants (Integer)
-- budget (BigInteger)
-- viewership (BigInteger)
-- revenue (BigInteger)
-
-## Example Queries
-
-1. Revenue Comparison:
-```
-What is the revenue comparison between all sports for the year 2024?
-```
-
-2. Trend Analysis:
-```
-Show me the revenue trend for Cricket from 2018 to 2024
-```
-
-3. Distribution Analysis:
-```
-What is the distribution of budget across different sports in 2023?
-```
-
-4. Correlation Analysis:
-```
-Show me the relationship between medals and revenue for all sports
-```
-
-## Development
+## Project Structure
 
 ### Backend Structure
 ```
 backend/
-├── api.py          # API endpoints and business logic
-├── db.py           # Database configuration
-├── models.py       # SQLAlchemy models
-├── main.py         # FastAPI application
-├── populate_data.py        # Sample data population
-└── populate_sports_data.py # Sports data population
+├── src/           # Source code
+├── dist/          # Compiled output
+├── package.json   # Dependencies and scripts
+├── tsconfig.json  # TypeScript configuration
+└── docker-compose.yml # Docker configuration
 ```
 
 ### Frontend Structure
 ```
 frontend/
-├── src/
-│   ├── components/
-│   │   ├── QueryForm.tsx
-│   │   ├── ChartDisplay.tsx
-│   │   ├── DataTable.tsx
-│   │   ├── SQLDisplay.tsx
-│   │   └── ResponseCard.tsx
-│   ├── App.tsx
-│   └── App.css
-└── package.json
+├── src/           # Source code
+├── public/        # Static assets
+├── package.json   # Dependencies and scripts
+├── tsconfig.json  # TypeScript configuration
+└── vite.config.ts # Vite configuration
 ```
+
+## Development
+
+The project uses TypeScript for both frontend and backend development, providing type safety and better developer experience.
+
+### Backend Development
+- Built with Node.js and TypeScript
+- Uses Express.js for the API server
+- Redis for caching and data storage
+- Docker for containerization
+
+### Frontend Development
+- Built with React and TypeScript
+- Uses Vite as the build tool
+- Modern UI components and responsive design
+- Chart.js for data visualization
 
 ## Troubleshooting
 
-1. Database Connection Issues:
-   - Ensure PostgreSQL is running
-   - Check DATABASE_URL in .env file
-   - Verify database credentials
+1. Redis Connection Issues:
+   - Ensure Redis is running
+   - Check REDIS_URL in .env file
+   - Verify Redis credentials
 
 2. API Connection Issues:
    - Check if backend server is running

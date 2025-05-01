@@ -6,11 +6,21 @@ import SQLDisplay from './components/SQLDisplay'
 import ResponseCard from './components/ResponseCard'
 
 interface QueryResponse {
-  question: string;
-  sql: string;
-  result: any[];
-  llm_response: string;
-  error?: string;
+  query: string;
+  rawData: any[];
+  tableData: string;
+  analysis: {
+    summary: string;
+    insights: string[];
+    recommendations: string[];
+  };
+  chartConfig: {
+    type: string;
+    title: string;
+    xAxisKey: string;
+    yAxisKeys: string[];
+    data: any[];
+  };
 }
 
 function App() {
@@ -27,7 +37,7 @@ function App() {
     setResponse(null)
 
     try {
-      const res = await fetch('http://localhost:8001/api/query', {
+      const res = await fetch('http://localhost:3000/api/chat/response', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,25 +92,57 @@ function App() {
 
           {response && (
             <div className="space-y-6">
-              <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-700">
-                <ResponseCard llmResponse={response.llm_response} />
+            <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-700">
+                <h3 className="text-xl font-semibold text-blue-400 mb-4">Analysis</h3>
+                <div className="prose prose-invert">
+                  <p>{response.analysis.summary}</p>
+                  {response.analysis.insights.length > 0 && (
+                    <div className="mt-4">
+                      <h4 className="text-lg font-medium text-purple-400">Key Insights</h4>
+                      <ul className="list-disc list-inside">
+                        {response.analysis.insights.map((insight, index) => (
+                          <li key={index}>{insight}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {response.analysis.recommendations.length > 0 && (
+                    <div className="mt-4">
+                      <h4 className="text-lg font-medium text-green-400">Recommendations</h4>
+                      <ul className="list-disc list-inside">
+                        {response.analysis.recommendations.map((rec, index) => (
+                          <li key={index}>{rec}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {response.result.length > 0 && (
+              {response.chartConfig && response.chartConfig.data.length > 0 && (
                 <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-700">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-4">Visualization</h3>
-                  <ChartDisplay data={response.result} chartType={chartType} />
+                  <h3 className="text-xl font-semibold text-blue-400 mb-4">{response.chartConfig.title}</h3>
+                  <ChartDisplay 
+                    data={response.chartConfig.data} 
+                    chartType={response.chartConfig.type || chartType}
+                    xAxisKey={response.chartConfig.xAxisKey}
+                    yAxisKeys={response.chartConfig.yAxisKeys}
+                  />
                 </div>
               )}
 
-              <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-700">
+            </div>
+          <div className="grid grid-cols-2 gap-4">
+          <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-700">
                 <h3 className="text-xl font-semibold text-blue-400 mb-4">Data</h3>
-                <DataTable data={response.result} />
+                <DataTable data={response.rawData} />
               </div>
 
               <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-700">
-                <SQLDisplay sql={response.sql} />
+                <SQLDisplay sql={response.query} />
               </div>
+          </div>
             </div>
           )}
         </main>

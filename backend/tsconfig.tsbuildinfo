@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/config/client.ts","./src/config/db.ts","./src/controllers/chatcontroller.ts","./src/helper/llmhelper.ts","./src/router/chatrouter.ts","./src/router/csv.ts"],"version":"5.7.3"}
